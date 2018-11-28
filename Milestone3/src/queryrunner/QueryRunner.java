@@ -5,7 +5,9 @@
  */
 package queryrunner;
 
+
 import java.util.ArrayList;
+import java.util.Scanner;
 
 /**
  * 
@@ -206,6 +208,61 @@ public class QueryRunner {
                 //    output. 
                 //    If it is an action query, you will tell how many row's were affected by it.
                 // 
+                Scanner in = new Scanner(System.in);
+                System.out.println("Enter the hostname/server : ");
+                String host = in.nextLine();
+                
+                System.out.println("Enter the username : ");
+                String user = in.nextLine();
+                
+                System.out.println("Enter the password : ");
+                String pass = in.nextLine();
+                
+                System.out.println("Enter the database : ");
+                String database = in.nextLine();
+                
+                queryrunner.m_jdbcData.ConnectToDatabase(host, user, pass, database);
+                int numOFQueries = queryrunner.GetTotalQueries();
+                
+                boolean isQueryToBeTested = true;
+                while(isQueryToBeTested){
+                    System.out.println("Enter query number between ( 1 and " + numOFQueries + " )");
+                    int queryChoice = in.nextInt();
+                    String [] parmstring = {};
+                    if(queryrunner.isParameterQuery(queryChoice)){ // fetches all the parameters
+                        int parameterAmt = queryrunner.GetParameterAmtForQuery(queryChoice);
+                        parmstring = new String[parameterAmt];
+                        for(int i = 0; i < parameterAmt; i++){
+                            String label = queryrunner.m_queryArray.get(i).GetParamText(i);
+                            System.out.println("Provide " + label + " : ");
+                            parmstring[i] = in.nextLine(); // got the parameter value
+                        }
+                        
+                        
+                    }
+                    
+                    if(queryrunner.isActionQuery(queryChoice)){ // if it is an action query
+                        
+                        queryrunner.ExecuteUpdate(queryChoice, parmstring);
+                        System.out.println(queryrunner.GetUpdateAmount() + " number of rows were affected");
+                    }else{
+                        queryrunner.ExecuteQuery(queryChoice, parmstring);
+                        String[][] results = queryrunner.GetQueryData();
+                        for(int i = 0; i < results.length; i++){
+                            for(int j = 0; j < results[i].length; j++){
+                                System.out.print(results[i][j] + "    ");
+                            }
+                            System.out.println("\n");
+                        }
+                    }
+                    
+                    System.out.println("Do you want to test another query? (y/n) : ");
+                    String testAgain = in.nextLine();
+                    isQueryToBeTested = (testAgain.equals("y"))? true:false;
+                    
+                }
+                 
+                   
                 //    This is Psuedo Code for the task:  
                 //    Connect()
                 //    n = GetTotalQueries()
@@ -214,7 +271,7 @@ public class QueryRunner {
                 //       Is it a query that Has Parameters
                 //       Then
                 //           amt = find out how many parameters it has
-                //           Create a paramter array of strings for that amount
+                //           --Create a paramter array of strings for that amount
                 //           for (j=0; j< amt; j++)
                 //              Get The Paramater Label for Query and print it to console. Ask the user to enter a value
                 //              Take the value you got and put it into your parameter array
