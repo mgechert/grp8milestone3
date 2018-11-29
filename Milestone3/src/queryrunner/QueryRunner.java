@@ -201,16 +201,16 @@ public class QueryRunner {
                 
                 Scanner in = new Scanner(System.in);
                 System.out.println("Enter the hostname/server : ");
-                String host = in.nextLine(); // "cssql.seattleu.edu";
+                String host =  in.nextLine(); // "cssql.seattleu.edu";// 
                 
                 System.out.println("Enter the username : ");
-                String user =  in.nextLine(); // "mm_sttest8b"; 
+                String user = in.nextLine(); //"mm_sttest8b"; //
                 
                 System.out.println("Enter the password : ");
-                String pass =  in.nextLine(); // "mm_sttest8bPass";
+                String pass =  in.nextLine(); //"mm_sttest8bPass";
                 
                 System.out.println("Enter the database : ");
-                String database = in.nextLine(); // "mm_sttest8b";
+                String database = in.nextLine();// "mm_sttest8b"; // 
                 
                 queryrunner.m_jdbcData.ConnectToDatabase(host, user, pass, database);
                 int numOFQueries = queryrunner.GetTotalQueries();
@@ -224,6 +224,7 @@ public class QueryRunner {
                     String [] parmstring = {};
                     if(queryrunner.isParameterQuery(queryChoice)){ // fetches all the parameters
                         int parameterAmt = queryrunner.GetParameterAmtForQuery(queryChoice);
+                        System.out.println(parameterAmt);
                         parmstring = new String[parameterAmt];
                         for(int i = 0; i < parameterAmt; i++){
                             String label = queryrunner.m_queryArray.get(queryChoice).GetParamText(i);
@@ -241,16 +242,23 @@ public class QueryRunner {
                         System.out.println(queryrunner.GetUpdateAmount() + " number of rows were affected");
                     }else{
                         queryrunner.ExecuteQuery(queryChoice, parmstring);
+                        String[] colNames = queryrunner.GetQueryHeaders();
                         String[][] results = queryrunner.GetQueryData();
+                        for(String col: colNames){
+                            System.out.print(col + "               ");
+                        }
+                        System.out.println("\n");
                         for(int i = 0; i < results.length; i++){
+                           
                             for(int j = 0; j < results[i].length; j++){
-                                System.out.print(results[i][j] + "    ");
+                                System.out.print(results[i][j] + "        ");
                             }
                             System.out.println("\n");
                         }
                     }
                     
                     System.out.println("Do you want to test another query? (y/n) : ");
+                    // in.nextLine();
                     String testAgain = in.nextLine();
                     isQueryToBeTested = (testAgain.equals("y"))? true:false;
                     
