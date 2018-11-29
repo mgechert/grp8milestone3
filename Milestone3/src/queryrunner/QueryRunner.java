@@ -59,7 +59,7 @@ public class QueryRunner {
     
     public int GetParameterAmtForQuery(int queryChoice)
     {
-        QueryData e=m_queryArray.get(queryChoice);
+        QueryData e= m_queryArray.get(queryChoice);
         return e.GetParmAmount();
     }
               
@@ -196,30 +196,21 @@ public class QueryRunner {
         }
         else
         {
-            if (args[0] == "-console")
+            if (args[0].equals("-console") )
             {
-                // TODO 
-                // You should code the following functionality:
-
-                //    You need to determine if it is a parameter query. If it is, then
-                //    you will need to ask the user to put in the values for the Parameters in your query
-                //    you will then call ExecuteQuery or ExecuteUpdate (depending on whether it is an action query or regular query)
-                //    if it is a regular query, you should then get the data by calling GetQueryData. You should then display this
-                //    output. 
-                //    If it is an action query, you will tell how many row's were affected by it.
-                // 
+                
                 Scanner in = new Scanner(System.in);
                 System.out.println("Enter the hostname/server : ");
-                String host = in.nextLine();
+                String host = in.nextLine(); // "cssql.seattleu.edu";
                 
                 System.out.println("Enter the username : ");
-                String user = in.nextLine();
+                String user =  in.nextLine(); // "mm_sttest8b"; 
                 
                 System.out.println("Enter the password : ");
-                String pass = in.nextLine();
+                String pass =  in.nextLine(); // "mm_sttest8bPass";
                 
                 System.out.println("Enter the database : ");
-                String database = in.nextLine();
+                String database = in.nextLine(); // "mm_sttest8b";
                 
                 queryrunner.m_jdbcData.ConnectToDatabase(host, user, pass, database);
                 int numOFQueries = queryrunner.GetTotalQueries();
@@ -228,13 +219,16 @@ public class QueryRunner {
                 while(isQueryToBeTested){
                     System.out.println("Enter query number between ( 1 and " + numOFQueries + " )");
                     int queryChoice = in.nextInt();
+                    queryChoice = queryChoice - 1;
+                    System.out.println("Query : " + queryrunner.GetQueryText(queryChoice));
                     String [] parmstring = {};
                     if(queryrunner.isParameterQuery(queryChoice)){ // fetches all the parameters
                         int parameterAmt = queryrunner.GetParameterAmtForQuery(queryChoice);
                         parmstring = new String[parameterAmt];
                         for(int i = 0; i < parameterAmt; i++){
-                            String label = queryrunner.m_queryArray.get(i).GetParamText(i);
+                            String label = queryrunner.m_queryArray.get(queryChoice).GetParamText(i);
                             System.out.println("Provide " + label + " : ");
+                            in.nextLine();
                             parmstring[i] = in.nextLine(); // got the parameter value
                         }
                         
@@ -261,38 +255,7 @@ public class QueryRunner {
                     isQueryToBeTested = (testAgain.equals("y"))? true:false;
                     
                 }
-                 
-                   
-                //    This is Psuedo Code for the task:  
-                //    Connect()
-                //    n = GetTotalQueries()
-                //    for (i=0;i < n; i++)
-                //    {
-                //       Is it a query that Has Parameters
-                //       Then
-                //           amt = find out how many parameters it has
-                //           --Create a paramter array of strings for that amount
-                //           for (j=0; j< amt; j++)
-                //              Get The Paramater Label for Query and print it to console. Ask the user to enter a value
-                //              Take the value you got and put it into your parameter array
-                //           If it is an Action Query then
-                //              call ExecuteUpdate to run the Query
-                //              call GetUpdateAmount to find out how many rows were affected, and print that value
-                //           else
-                //               call ExecuteQuery 
-                //               call GetQueryData to get the results back
-                //               print out all the results
-                //           end if
-                //      }
-                //    Disconnect()
-
-
-                // NOTE - IF THERE ARE ANY ERRORS, please print the Error output
-                // NOTE - The QueryRunner functions call the various JDBC Functions that are in QueryJDBC. If you would rather code JDBC
-                // functions directly, you can choose to do that. It will be harder, but that is your option.
-                // NOTE - You can look at the QueryRunner API calls that are in QueryFrame.java for assistance. You should not have to 
-                //    alter any code in QueryJDBC, QueryData, or QueryFrame to make this work.
-                System.out.println("Please write the non-gui functionality");
+                
             }
             else
             {
