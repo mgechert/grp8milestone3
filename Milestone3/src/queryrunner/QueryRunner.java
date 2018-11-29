@@ -47,7 +47,7 @@ public class QueryRunner {
         m_queryArray.add(new QueryData("Select * from User", null, null, false, false));   // THIS NEEDS TO CHANGE FOR YOUR APPLICATION
         m_queryArray.add(new QueryData("SELECT g.genre_title genre, b.title book_title FROM Book b JOIN Book_Genre bg ON b.isbn = bg.isbn JOIN Genre g ON bg.genre_id = g.genre_id WHERE g.genre_title = ?", new String [] {"GENRE_TITLE"}, new boolean [] {false},  false, true));        // THIS NEEDS TO CHANGE FOR YOUR APPLICATION
         m_queryArray.add(new QueryData("Select * from contact where contact_name like ?", new String [] {"CONTACT_NAME"}, new boolean [] {true}, false, true));        // THIS NEEDS TO CHANGE FOR YOUR APPLICATION
-        m_queryArray.add(new QueryData("insert into contact (contact_id, contact_name, contact_salary) values (?,?,?)",new String [] {"CONTACT_ID", "CONTACT_NAME", "CONTACT_SALARY"}, new boolean [] {false, false, false}, true, true));// THIS NEEDS TO CHANGE FOR YOUR APPLICATION
+        m_queryArray.add(new QueryData("INSERT INTO User (user_id, username, first_name, last_name, bio, zipcode) values (?,?,?,?,?,?)",new String [] {"user_id", "username", "first_name", "last_name", "bio", "zipcode"}, new boolean [] {false, false, false, false, false, false}, true, true));// THIS NEEDS TO CHANGE FOR YOUR APPLICATION
                        
     }
        
