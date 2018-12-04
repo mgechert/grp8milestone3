@@ -34,6 +34,7 @@ public class QueryRunner {
         m_queryNameArray.add("Get books based on genre");
         m_queryNameArray.add("Update user bio");
         m_queryNameArray.add("Add new user");
+        m_queryNameArray.add("Get the books the user's friends have read");
         
         // Each row that is added to m_queryArray is a separate query. It does not work on Stored procedure calls.
         // The 'new' Java keyword is a way of initializing the data that will be added to QueryArray. Please do not change
@@ -48,7 +49,9 @@ public class QueryRunner {
         m_queryArray.add(new QueryData("SELECT g.genre_title genre, b.title book_title FROM Book b JOIN Book_Genre bg ON b.isbn = bg.isbn JOIN Genre g ON bg.genre_id = g.genre_id WHERE g.genre_title = ?", new String [] {"GENRE_TITLE"}, new boolean [] {false},  false, true));
         m_queryArray.add(new QueryData("UPDATE User SET User.bio = ? WHERE User.username = ?;", new String [] {"USER_BIO", "USERNAME"}, new boolean [] {false, false}, true, true)); 
         m_queryArray.add(new QueryData("INSERT INTO User (user_id, username, first_name, last_name, bio, zipcode) values (?,?,?,?,?,?)",new String [] {"user_id", "username", "first_name", "last_name", "bio", "zipcode"}, new boolean [] {false, false, false, false, false, false}, true, true));
-                       
+        m_queryArray.add(new QueryData("SELECT Book.isbn, Book.title FROM Friendship, User, User_Book, Book, BookStatus WHERE User.user_id = Friendship.user_id "
+                + "AND User_Book.user_id = Friendship.following_user_id AND Book.isbn = User_Book.isbn AND BookStatus.book_status_id = User_Book.book_status_id "
+                + "AND BookStatus.description = 'Read' AND User.username = ?", new String [] {"USERNAME"}, new boolean [] {false}, false, true));
     }
        
 
@@ -72,7 +75,6 @@ public class QueryRunner {
     public String GetQueryText(int queryChoice)
     {
         QueryData e=m_queryArray.get(queryChoice);
-        System.out.println(e.GetQueryString());
         return e.GetQueryString();        
     }
     
@@ -226,6 +228,7 @@ public class QueryRunner {
                     for (int i = 0; i < numOFQueries; i++) {
                         System.out.println((i + 1) + " - " + queryrunner.GetQueryName(i));
                     }
+                    System.out.println("\nYour Selection:");
                     int queryChoice = Integer.parseInt(in.nextLine());
                     queryChoice = queryChoice - 1;
                     System.out.println("Query : " + queryrunner.GetQueryText(queryChoice));
