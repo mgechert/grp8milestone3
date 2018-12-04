@@ -241,7 +241,6 @@ public class QueryRunner {
                             System.out.println("Provide " + label + " : ");
                             
                             parmstring[i] = in.nextLine(); // got the parameter value
-                            System.out.println(parmstring[i].getClass());
                         }
                   
                     }
