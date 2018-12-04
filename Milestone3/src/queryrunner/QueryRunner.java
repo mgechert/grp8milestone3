@@ -5,7 +5,7 @@
  */
 package queryrunner;
 
-
+import java.util.HashSet;
 import java.util.ArrayList;
 import java.util.Scanner;
 
@@ -43,10 +43,11 @@ public class QueryRunner {
         //    LikeParameter Array  is an array I regret having to add, but it is necessary to tell QueryRunner which parameter has a LIKE Clause. If you have no parameters, put in null. Otherwise put in false for parameters that don't use 'like' and true for ones that do.
         //    IsItActionQuery (e.g. Mark it true if it is, otherwise false)
         //    IsItParameterQuery (e.g.Mark it true if it is, otherwise false)
-        
-        m_queryArray.add(new QueryData("Select * from User", null, null, false, false));   // THIS NEEDS TO CHANGE FOR YOUR APPLICATION
+        HashSet<String> intColumnValues = new HashSet<String>();
+        intColumnValues.add("zipcode");
+        m_queryArray.add(new QueryData("SELECT Book.title, AVG(rating) FROM Review, Book WHERE Book.isbn=Review.isbn AND Book.title LIKE ?", new String [] {"BOOK_TITLE"}, new boolean [] {true}, false, true));   // THIS NEEDS TO CHANGE FOR YOUR APPLICATION
         m_queryArray.add(new QueryData("SELECT g.genre_title genre, b.title book_title FROM Book b JOIN Book_Genre bg ON b.isbn = bg.isbn JOIN Genre g ON bg.genre_id = g.genre_id WHERE g.genre_title = ?", new String [] {"GENRE_TITLE"}, new boolean [] {false},  false, true));        // THIS NEEDS TO CHANGE FOR YOUR APPLICATION
-        m_queryArray.add(new QueryData("Select * from contact where contact_name like ?", new String [] {"CONTACT_NAME"}, new boolean [] {true}, false, true));        // THIS NEEDS TO CHANGE FOR YOUR APPLICATION
+        m_queryArray.add(new QueryData("UPDATE User SET User.bio = ? WHERE User.username = ?;", new String [] {"USER_BIO", "USERNAME"}, new boolean [] {false, false}, true, true));        // THIS NEEDS TO CHANGE FOR YOUR APPLICATION
         m_queryArray.add(new QueryData("INSERT INTO User (user_id, username, first_name, last_name, bio, zipcode) values (?,?,?,?,?,?)",new String [] {"user_id", "username", "first_name", "last_name", "bio", "zipcode"}, new boolean [] {false, false, false, false, false, false}, true, true));// THIS NEEDS TO CHANGE FOR YOUR APPLICATION
                        
     }
@@ -198,7 +199,7 @@ public class QueryRunner {
         {
             if (args[0].equals("-console") )
             {
-                
+               
                 Scanner in = new Scanner(System.in);
                 System.out.println("Enter the hostname/server : ");
                 String host =  in.nextLine(); // "cssql.seattleu.edu";// 
@@ -218,19 +219,19 @@ public class QueryRunner {
                 boolean isQueryToBeTested = true;
                 while(isQueryToBeTested){
                     System.out.println("Enter query number between ( 1 and " + numOFQueries + " )");
-                    int queryChoice = in.nextInt();
+                    int queryChoice = Integer.parseInt(in.nextLine());
                     queryChoice = queryChoice - 1;
                     System.out.println("Query : " + queryrunner.GetQueryText(queryChoice));
                     String [] parmstring = {};
                     if(queryrunner.isParameterQuery(queryChoice)){ // fetches all the parameters
                         int parameterAmt = queryrunner.GetParameterAmtForQuery(queryChoice);
-                        System.out.println(parameterAmt);
                         parmstring = new String[parameterAmt];
                         for(int i = 0; i < parameterAmt; i++){
                             String label = queryrunner.m_queryArray.get(queryChoice).GetParamText(i);
                             System.out.println("Provide " + label + " : ");
-                            in.nextLine();
+                            
                             parmstring[i] = in.nextLine(); // got the parameter value
+                            System.out.println(parmstring[i].getClass());
                         }
                         
                         
