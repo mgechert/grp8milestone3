@@ -5,7 +5,6 @@
  */
 package queryrunner;
 
-import java.util.HashSet;
 import java.util.ArrayList;
 import java.util.Scanner;
 
@@ -25,14 +24,16 @@ public class QueryRunner {
         this.m_jdbcData = new QueryJDBC();
         m_updateAmount = 0;
         m_queryArray = new ArrayList<>();
+        m_queryNameArray = new ArrayList<>();
         m_error="";
-    
         
-        // TODO - You will need to change the queries below to match your queries.
+        this.m_projectTeamApplication="BooksVille";
         
-        // You will need to put your Project Application in the below variable
-        
-        this.m_projectTeamApplication="BooksVille";    // THIS NEEDS TO CHANGE FOR YOUR APPLICATION
+        // Add the query names to the queryNameArray
+        m_queryNameArray.add("Get average rating of a book");
+        m_queryNameArray.add("Get books based on genre");
+        m_queryNameArray.add("Update user bio");
+        m_queryNameArray.add("Add new user");
         
         // Each row that is added to m_queryArray is a separate query. It does not work on Stored procedure calls.
         // The 'new' Java keyword is a way of initializing the data that will be added to QueryArray. Please do not change
@@ -43,12 +44,10 @@ public class QueryRunner {
         //    LikeParameter Array  is an array I regret having to add, but it is necessary to tell QueryRunner which parameter has a LIKE Clause. If you have no parameters, put in null. Otherwise put in false for parameters that don't use 'like' and true for ones that do.
         //    IsItActionQuery (e.g. Mark it true if it is, otherwise false)
         //    IsItParameterQuery (e.g.Mark it true if it is, otherwise false)
-        HashSet<String> intColumnValues = new HashSet<String>();
-        intColumnValues.add("zipcode");
-        m_queryArray.add(new QueryData("SELECT Book.title, AVG(rating) FROM Review, Book WHERE Book.isbn=Review.isbn AND Book.title LIKE ?", new String [] {"BOOK_TITLE"}, new boolean [] {true}, false, true));   // THIS NEEDS TO CHANGE FOR YOUR APPLICATION
-        m_queryArray.add(new QueryData("SELECT g.genre_title genre, b.title book_title FROM Book b JOIN Book_Genre bg ON b.isbn = bg.isbn JOIN Genre g ON bg.genre_id = g.genre_id WHERE g.genre_title = ?", new String [] {"GENRE_TITLE"}, new boolean [] {false},  false, true));        // THIS NEEDS TO CHANGE FOR YOUR APPLICATION
-        m_queryArray.add(new QueryData("UPDATE User SET User.bio = ? WHERE User.username = ?;", new String [] {"USER_BIO", "USERNAME"}, new boolean [] {false, false}, true, true));        // THIS NEEDS TO CHANGE FOR YOUR APPLICATION
-        m_queryArray.add(new QueryData("INSERT INTO User (user_id, username, first_name, last_name, bio, zipcode) values (?,?,?,?,?,?)",new String [] {"user_id", "username", "first_name", "last_name", "bio", "zipcode"}, new boolean [] {false, false, false, false, false, false}, true, true));// THIS NEEDS TO CHANGE FOR YOUR APPLICATION
+        m_queryArray.add(new QueryData("SELECT Book.title, AVG(rating) FROM Review, Book WHERE Book.isbn=Review.isbn AND Book.title LIKE ?", new String [] {"BOOK_TITLE"}, new boolean [] {true}, false, true));
+        m_queryArray.add(new QueryData("SELECT g.genre_title genre, b.title book_title FROM Book b JOIN Book_Genre bg ON b.isbn = bg.isbn JOIN Genre g ON bg.genre_id = g.genre_id WHERE g.genre_title = ?", new String [] {"GENRE_TITLE"}, new boolean [] {false},  false, true));
+        m_queryArray.add(new QueryData("UPDATE User SET User.bio = ? WHERE User.username = ?;", new String [] {"USER_BIO", "USERNAME"}, new boolean [] {false, false}, true, true)); 
+        m_queryArray.add(new QueryData("INSERT INTO User (user_id, username, first_name, last_name, bio, zipcode) values (?,?,?,?,?,?)",new String [] {"user_id", "username", "first_name", "last_name", "bio", "zipcode"}, new boolean [] {false, false, false, false, false, false}, true, true));
                        
     }
        
@@ -73,6 +72,7 @@ public class QueryRunner {
     public String GetQueryText(int queryChoice)
     {
         QueryData e=m_queryArray.get(queryChoice);
+        System.out.println(e.GetQueryString());
         return e.GetQueryString();        
     }
     
@@ -165,11 +165,17 @@ public class QueryRunner {
     {
         return m_error;
     }
+    
+    public String GetQueryName(int i)
+    {
+        return m_queryNameArray.get(i);
+    }
  
     private QueryJDBC m_jdbcData;
     private String m_error;    
     private String m_projectTeamApplication;
     private ArrayList<QueryData> m_queryArray;  
+    private ArrayList<String> m_queryNameArray;
     private int m_updateAmount;
             
     /**
@@ -182,8 +188,6 @@ public class QueryRunner {
     // It will close the database session
     
     public static void main(String[] args) {
-        // TODO code application logic here
-
         final QueryRunner queryrunner = new QueryRunner();
         
         if (args.length == 0)
@@ -219,6 +223,9 @@ public class QueryRunner {
                 boolean isQueryToBeTested = true;
                 while(isQueryToBeTested){
                     System.out.println("Enter query number between ( 1 and " + numOFQueries + " )");
+                    for (int i = 0; i < numOFQueries; i++) {
+                        System.out.println((i + 1) + " - " + queryrunner.GetQueryName(i));
+                    }
                     int queryChoice = Integer.parseInt(in.nextLine());
                     queryChoice = queryChoice - 1;
                     System.out.println("Query : " + queryrunner.GetQueryText(queryChoice));
@@ -233,8 +240,7 @@ public class QueryRunner {
                             parmstring[i] = in.nextLine(); // got the parameter value
                             System.out.println(parmstring[i].getClass());
                         }
-                        
-                        
+                  
                     }
                     
                     if(queryrunner.isActionQuery(queryChoice)){ // if it is an action query
