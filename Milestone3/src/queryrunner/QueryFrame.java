@@ -22,7 +22,7 @@ public class QueryFrame extends javax.swing.JFrame {
  * It will also set the default state of the Command Buttons and combo boxes.
  * @param queryrunnerObj 
  */
-    public QueryFrame(QueryRunner queryrunnerObj) {
+    public QueryFrame(QueryRunner queryrunnerObj, ArrayList<String> list) {
         initComponents();
         m_parmlabels = new JLabel[]{jLabel1, jLabel2, jLabel3, jLabel4, jLabel9, jLabel10, jLabel11, jLabel12};        
         m_textvals = new JTextField[] { jTextField5, jTextField6,jTextField7,jTextField8,jTextField9,jTextField10,jTextField11,jTextField12};
@@ -33,7 +33,8 @@ public class QueryFrame extends javax.swing.JFrame {
 
         for (int i=0; i < nAmt; i++)
         {
-            this.jComboBox1.addItem("Query " + (i+1));
+            String s = list.get(i);
+            this.jComboBox1.addItem((i+1) + " - " + s);
         }
         jComboBox1.setEnabled(false);
         jButton2.setEnabled(false);
@@ -274,7 +275,7 @@ public class QueryFrame extends javax.swing.JFrame {
         
         jTextArea2.setText("");
         String szChoice = (String)jComboBox1.getSelectedItem();        
-        String szStripChoice = szChoice.substring(6);
+        String szStripChoice = szChoice.substring(0, 1); // Hardcoded to the first character
         m_queryChoice = Integer.parseInt(szStripChoice)-1;        
         String szQuery = m_queryrunner.GetQueryText(m_queryChoice);
         this.jTextArea1.setText(szQuery);
@@ -319,7 +320,7 @@ public class QueryFrame extends javax.swing.JFrame {
  */
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
 
-        jTextArea2.setText("");        
+        jTextArea2.setText("");
         if (this.m_queryrunner.isActionQuery(m_queryChoice) == false)
             jPanel2.setVisible(true);
         

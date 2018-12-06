@@ -168,6 +168,11 @@ public class QueryRunner {
         return m_error;
     }
     
+    public ArrayList<String> GetQueryNameArray()
+    {
+        return m_queryNameArray;
+    }
+    
     public String GetQueryName(int i)
     {
         return m_queryNameArray.get(i);
@@ -197,7 +202,7 @@ public class QueryRunner {
             java.awt.EventQueue.invokeLater(new Runnable() {
                 public void run() {
 
-                    new QueryFrame(queryrunner).setVisible(true);
+                    new QueryFrame(queryrunner, queryrunner.GetQueryNameArray()).setVisible(true);
                 }            
             });
         }
